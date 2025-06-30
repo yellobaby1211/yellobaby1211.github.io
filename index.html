@@ -11,15 +11,29 @@
   <!-- Mida A/B testing script: insert your project key in place of YOUR_PROJECT_KEY -->
   <script async src="https://cdn.mida.so/js/optimize.js?key=XZbzAeVxR9MD9Ro9DGmWNy"></script>
   <style>
-    /* Default button style (Current color: Blue) */
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f5f5f5;
+      font-family: sans-serif;
+    }
+
     #cta-btn {
-      background-color: blue;   /* current/default button color */
-      color: white;            /* text color on the button */
-      padding: 10px 20px;
-      font-size: 1.1em;
+      background-color: blue;  /* Default button color */
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.2em;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s ease;
     }
   </style>
 </head>

@@ -338,15 +338,6 @@
   </div>
   
   <script>
-    // Add some interactive elements to increase engagement
-    document.getElementById('cta-btn').addEventListener('mouseenter', function() {
-      this.style.animation = 'pulse 0.6s infinite';
-    });
-    
-    document.getElementById('cta-btn').addEventListener('mouseleave', function() {
-      this.style.animation = 'none';
-    });
-    
     // Add pulse animation
     const style = document.createElement('style');
     style.textContent = `
@@ -358,22 +349,72 @@
     `;
     document.head.appendChild(style);
     
-    // Track button clicks for your A/B test
-    document.getElementById('cta-btn').addEventListener('click', function() {
-      // Your existing A/B testing will handle the click tracking
-      console.log('Button clicked - A/B test data should be recorded');
+    // Function to add event listeners to the button
+    function attachButtonEvents() {
+      const button = document.getElementById('cta-btn');
+      if (!button) return;
       
-      // Optional: Add some feedback for the user
-      this.innerHTML = 'Processing...';
-      this.disabled = true;
+      // Remove any existing listeners to prevent duplicates
+      const newButton = button.cloneNode(true);
+      button.parentNode.replaceChild(newButton, button);
       
-      setTimeout(() => {
-        this.innerHTML = 'Downloaded! ✓';
+      // Add hover effects
+      newButton.addEventListener('mouseenter', function() {
+        this.style.animation = 'pulse 0.6s infinite';
+      });
+      
+      newButton.addEventListener('mouseleave', function() {
+        this.style.animation = 'none';
+      });
+      
+      // Add click handler
+      newButton.addEventListener('click', function() {
+        // Your existing A/B testing will handle the click tracking
+        console.log('Button clicked - A/B test data should be recorded');
+        
+        // Get current button text to restore it later
+        const originalText = this.innerHTML;
+        
+        // Optional: Add some feedback for the user
+        this.innerHTML = 'Processing...';
+        this.disabled = true;
+        
         setTimeout(() => {
-          this.innerHTML = 'GET FREE ACCESS NOW';
-          this.disabled = false;
-        }, 2000);
-      }, 1000);
+          this.innerHTML = 'Downloaded! ✓';
+          setTimeout(() => {
+            this.innerHTML = originalText; // Restore original text
+            this.disabled = false;
+          }, 2000);
+        }, 1000);
+      });
+    }
+    
+    // Initial attachment
+    document.addEventListener('DOMContentLoaded', attachButtonEvents);
+    
+    // Re-attach after a delay to catch Mida changes
+    setTimeout(attachButtonEvents, 1000);
+    setTimeout(attachButtonEvents, 2000);
+    
+    // Use MutationObserver to detect when Mida changes the button
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.type === 'childList' || mutation.type === 'attributes') {
+          // Check if button was modified
+          const button = document.getElementById('cta-btn');
+          if (button && !button.hasAttribute('data-events-attached')) {
+            setTimeout(attachButtonEvents, 100);
+          }
+        }
+      });
+    });
+    
+    // Start observing
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class']
     });
   </script>
 </body>
